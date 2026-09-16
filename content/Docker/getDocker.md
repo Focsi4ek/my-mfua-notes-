@@ -103,6 +103,26 @@ docker image inspect hello-world
 ```shell
 docker rm 6f72bfc0ed02
 ```
+Получить сводку по диску Docker
+```shell
+docker system df
+```
+Получить сводку по всем томам
+```shell
+docker volume ls
+```
+```shell
+# Список томов с размером
+docker system df -v
+```
+Очистить все ненужные тома
+```shell
+docker volume prune -a
+```
+и для кэша всех сборок
+```shell
+docker builder prune
+```
 
 > Удаление контейнера не приводит к удалению Docker образа!
 
@@ -194,122 +214,6 @@ docker images
 ```shell
 docker rmi my-nginx
 ```
-
-### Docket Compose
-
-### Установка и управление БД PostgresSQL
-
-Создать структуру будущего проекта:
-```
-postgres-docker-project
-├── backups
-├── data
-└── scripts
-```
-
-можно командой в терминале:
-```shell
-mkdir -p postgres-docker-project/{data,scripts,backups}
-```
-
-Войти в каталог `postgres-docker-project`
-```shell
-cd postgres-docker-project
-```
-
-Создать файл `docker-compose.yml`
-```shell
-touch docker-compose.yml
-```
-
-Вставить в него этот код:
-```yml
-services:
-  postgres:
-    image: postgres:15
-    container_name: new-postgres
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./data:/var/lib/postgresql/data
-      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./backups:/backups
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-```
-
-Перейти в каталог `scripts`
-```shell
-cd scripts
-```
-
-в файл `init.sql` вставить код:
-```sql
-CREATE DATABASE app_db;
-CREATE USER app_user WITH PASSWORD 'app_password';
-GRANT ALL PRIVILEGES ON DATABASE app_db TO app_user;
-\c mydatabase;
-CREATE TABLE IF NOT EXISTS users (    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-INSERT INTO users (name, email) VALUES
-('Иван Иванов', 'ivan@example.com'),
-('Мария Петрова', 'maria@example.com')
-ON CONFLICT (email) DO NOTHING;
-```
-
-Запустить контейнер:
-```shell
-docker compose up -d
-```
-
-Показать логи базы данных `postgres`
-```shell
-docker compose logs postgres
-```
-
-Приостановить запущенный контейнер:
-```shell
-docker compose stop
-```
-
-Запустить приостановленный контейнер:
-```shell
-docker compose start
-```
-
-Показать конфигурацию текущего проекта:
-```shell
-docker compose config
-```
-
-
-Остановить запущенный контейнер (остановка + удаление)
-```shell
-docker compose down
-```
-
-Подкдючиться к запущенной БД
-```shell
-docker exec -it new-postgres psql -U myuser mydatabase
-```
-
-где `new-postgres` - это имя контейнера, `myuser` - имя пользователя в БД **PostgresSQL**, `mydatabase` - имя БД
-
-ключи:
-
-- `-it` - это интерактивный режим, который позволяет держать открытым стандартный ввод с командной строки правильного отображения терминала tty
-- `-U`  - ключ утилиты `psql`, который указывает на имя пользователя для подключения к **PostgresSQL**
 
 
 Показать справу по работе с БД Postgres
@@ -484,5 +388,9 @@ docker image prune -a
 ```shell
 docker rmi -f $(docker images -q)
 ```
+
+### Ссылки
+
+- [Docker Reminder](https://www.altlinux.org/Docker_Reminder)
 
 > Если вы обнаружили ошибку в этом тексте - сообщите пожалуйста автору!
