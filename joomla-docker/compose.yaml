@@ -1,0 +1,50 @@
+services:
+  # Сервис базы данных MariaDB
+  db:
+    # Используем официальный образ MariaDB 11.5.2
+    image: mariadb:11.5.2
+    # Контейнер автоматически перезапускается, если он остановился или упал
+    restart: unless-stopped
+    environment:
+      # Обязательные переменные окружения для базы данных
+      MYSQL_ROOT_PASSWORD: example_root_password
+      MYSQL_DATABASE: joomla_db
+      MYSQL_USER: joomla_user
+      MYSQL_PASSWORD: joomla_password
+    volumes:
+      # Сохраняем данные базы данных в Docker-томе для персистентности
+      - db_data:/var/lib/mysql
+    networks:
+      - joomla-network
+
+  # Сервис Joomla
+  joomla:
+    # Зависит от сервиса db, запустится только после того, как база данных будет готова
+    depends_on:
+      - db
+    # Используем официальный образ Joomla с Apache
+    image: joomla:latest
+    # Пробрасываем порт 8082 на хосте на порт 82 в контейнере
+    ports:
+      - "8082:80"
+    restart: unless-stopped
+    environment:
+      # Переменные окружения для подключения Joomla к базе данных
+      JOOMLA_DB_HOST: db:3306
+      JOOMLA_DB_USER: joomla_user
+      JOOMLA_DB_PASSWORD: joomla_password
+      JOOMLA_DB_NAME: joomla_db
+    volumes:
+      # Монтируем директорию с данными Joomla для сохранения контента, плагинов и тем
+      - joomla_data:/var/www/html
+    networks:
+      - joomla-network
+
+# Определяем общую сеть для связи контейнеров
+networks:
+  joomla-network:
+
+# Определяем Docker-тома для хранения данных
+volumes:
+  db_data:
+  joomla_data:
