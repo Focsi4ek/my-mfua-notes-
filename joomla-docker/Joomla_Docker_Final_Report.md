@@ -57,7 +57,7 @@ docker compose up -d
 
 *Процесс загрузки образов и успешный старт контейнеров:*
 
-![Запуск Docker Compose](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/4.png.png?raw=true)
+![Запуск Docker Compose](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/6.png.png?raw=true)
 
 ## 3. Процесс веб-установки Joomla
 
@@ -65,7 +65,7 @@ docker compose up -d
 
 *Стартовая страница мастера установки:*
 
-![Мастер установки Joomla]()
+![Мастер установки Joomla](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/4.png.png?raw=true)
 
 ### Настройка учетной записи администратора
 На данном этапе были заданы логин, пароль (согласно требованиям безопасности — более 12 символов) и email администратора:
@@ -89,6 +89,17 @@ docker compose up -d
 ![Успешная установка](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/2.png.png?raw=true)
 
 Инфраструктура развернута корректно, сайт и панель управления администратора функционируют штатно.
+
+### Демонстрация работоспособности
+
+*Главная страница развернутого сайта (авторизованный пользователь):*
+![Главная страница](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/7.png.png?raw=true)
+
+*Главная панель управления администратора (Joomla Backend):*
+![Админка - Верх](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/9.png.png?raw=true)
+
+*Логи действий администратора в системе:*
+![Админка - Логи](https://github.com/Focsi4ek/my-mfua-notes-/blob/main/joomla-docker/8.png.png?raw=true)
 
 ## 5. Управление и полезные команды
 
